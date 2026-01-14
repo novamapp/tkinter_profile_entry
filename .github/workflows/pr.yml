@@ -1,0 +1,32 @@
+name: Authenticate Push
+
+# trigger on push to any branch
+on:
+    pull_request:
+
+jobs:
+    check-user-for-pr:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v3
+            
+          - name: Check Account Pushing
+            run: | 
+                ALLOWED_USERS=("novamapp")
+                echo "account pushing: $GITHUB_ACTOR"
+
+                # check if account pushing is in allowed list
+                if [[ ! " ${ALLOWED_USERS[@]} " =~ " ${GITHUB_ACTOR} " ]]; then
+                    echo " ❌ ERROR: Account $GITHUB_ACTOR is not allowed to push."
+                    exit 1
+                fi
+
+                # check if account commiting is in allowed list
+                AUTHOR=$(git log -1 --pretty=format:'%an')
+                if [[ ! " ${ALLOWED_USERS[@]} " =~ " ${AUTHOR} " ]]; then
+                    echo " ❌ ERROR: Account $AUTHOR is not allowed to push."
+                    exit 1
+                fi
+
+                echo "✅ push successful"
