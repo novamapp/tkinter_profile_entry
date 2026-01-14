@@ -5,7 +5,7 @@ on:
     pull_request:
 
 jobs:
-    check-user:
+    check-user-for-pr:
         runs-on: ubuntu-latest
         steps:
           - name: Checkout repository
